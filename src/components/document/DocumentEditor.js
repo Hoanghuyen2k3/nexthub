@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { firestore } from './firebase';
+import { firestore } from '../../firebase';
 import { addDoc, collection } from '@firebase/firestore';
 
 const DocumentEditor = ({ docId }) => {
@@ -15,7 +15,7 @@ const DocumentEditor = ({ docId }) => {
 
   const saveDocument = async (newContent) => {
     try {
-      const ref = await collection(firestore, 'document');
+      const ref = await collection(firestore, 'documents');
       const data =
       {
         content: newContent,

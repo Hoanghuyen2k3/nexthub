@@ -1,8 +1,7 @@
 // DocumentUpload.js
 import React, { useState } from 'react';
-import { firestore } from './firebase';
+import { firestore } from '../../firebase';
 import { addDoc, collection } from 'firebase/firestore';
-
 const DocumentUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -15,7 +14,7 @@ const DocumentUpload = () => {
     if (selectedFile) {
       try {
         const fileContent = await selectedFile.text();
-        const ref = await collection('document')
+        const ref = await collection(firestore, 'documents')
         const data = {
           content: fileContent,
         };
