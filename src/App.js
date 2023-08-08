@@ -39,7 +39,8 @@ import {
 import Chat from "./components/real-time-chat/Chat";
 import DocumentEditingPage from "./components/document/DocumentEditingPage";
 import Auth from "./components/auth/Auth";
-
+import DocumentEditor from "./components/document/DocumentEditor";
+import RealTimeDocumentEditor from "./components/document/RealTimeDocument";
 function App() {
   
   const router = createBrowserRouter(createRoutesFromElements(
@@ -47,7 +48,11 @@ function App() {
     <Route path="/">      
       <Route path="login" element={<Auth />} />
       <Route path="chat" element={<Chat />} />
+
       <Route path="document" element ={<DocumentEditingPage />} />
+        
+     
+      <Route path="document/:id" element={<RealTimeDocumentEditor />} />
   
     </Route>))
   

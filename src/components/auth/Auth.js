@@ -11,7 +11,7 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
 import { userLogin, userLogout } from '../../features/loginSlice';
 import { useDispatch } from 'react-redux';
-
+import { useNavigate } from 'react-router-dom';
 
 
 import { collection, query, orderBy, limit, addDoc} from 'firebase/firestore';
@@ -20,14 +20,15 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
+  const navigate= useNavigate();
 
   const [user] = useAuthState(auth);
 
 
 
-  const signInWithGoogle = () => {
+  const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
+    await signInWithPopup(auth, provider)
       .catch(error => {
         console.error(error);
         dispatch(userLogout());
@@ -35,7 +36,8 @@ const Auth = () => {
 
     if (user) {
       const { uid, photoURL } = auth.currentUser;
-      dispatch(userLogin({uid: uid, photoURL: photoURL}));
+      await dispatch(userLogin({uid: uid, photoURL: photoURL}));
+      navigate("/document")
 
       console.log('User UID:', uid);
     } else {
@@ -48,9 +50,10 @@ const Auth = () => {
       console.log("success");
       if (user) {
         const { uid, photoURL } = auth.currentUser;
-        dispatch(userLogin({uid: uid, photoURL: photoURL}));
+        await dispatch(userLogin({uid: uid, photoURL: photoURL}));
   
         console.log('User UID:', uid);
+        navigate("/document")
       } else {
         dispatch(userLogout());
       }
@@ -67,9 +70,10 @@ const Auth = () => {
       console.log("success");
       if (user) {
         const { uid, photoURL } = auth.currentUser;
-        dispatch(userLogin({uid: uid, photoURL: photoURL}));
+        await dispatch(userLogin({uid: uid, photoURL: photoURL}));
   
         console.log('User UID:', uid);
+        navigate("/document")
       } else {
         dispatch(userLogout());
       }

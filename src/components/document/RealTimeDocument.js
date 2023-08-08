@@ -5,9 +5,11 @@ import { firestore } from '../../firebase';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 import { doc, setDoc, updateDoc, collection } from "firebase/firestore"; 
+import { useParams } from 'react-router-dom';
 
-
-const RealTimeDocumentEditor = ({ docId }) => {
+const RealTimeDocumentEditor = () => {
+    const params = useParams();
+    const docId = params.id;
     const [content, setContent] = useState('');
     const documentsCollection = collection(firestore, 'documents'); // Replace 'documents' with your collection name
     const documentId = docId; // Replace with the actual document ID
@@ -30,7 +32,9 @@ const RealTimeDocumentEditor = ({ docId }) => {
     
     // Data to be written to the document
     const data =
+
         {
+          ...value.data(),
           content: newContent,
         };
 

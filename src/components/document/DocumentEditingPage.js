@@ -16,44 +16,39 @@ import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 import { collection, query, orderBy, limit, addDoc} from 'firebase/firestore';
 
-
+import { selectLogin } from '../../features/loginSlice';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 const DocumentEditingPage = () => {
-  const [user] = useAuthState(auth);
-
-  if (user) {
-    // Destructure the uid property if user is logged in
-    const { uid, photoURL } = auth.currentUser;
-    console.log('User UID:', uid);
-  } else {
-    console.log('User is not logged in');
-  }
-  
-  const [content, setContent] = useState('');
-
-  const handleEditorChange = (newContent) => {
-    setContent(newContent);
-    saveDocument(newContent);
-  };
-
-  const saveDocument = async (newContent) => {
+  const login = useSelector(selectLogin);
+  const user = login.user;
+  const navigate =useNavigate();
+  const handleClick = async () => {
     try {
       const ref = await collection(firestore, 'documents');
       const data =
       {
-        content: newContent,
+        user:user,
+        content: ""
+
       };
-      addDoc(ref, data);
+      const docRef= await addDoc(ref, data);
+      const id= docRef.id;
+      navigate(id)
+
+        
+
     } catch (error) {
       console.error('Error saving document:', error);
     }
   };
+  
 
   return (
     <div>
-      <ReactQuill value={content} onChange={handleEditorChange} />
-      <h1>Document Editor</h1>
-      <button>Create</button>
-      <button>Upload</button>
+      
+      <button onClick={handleClick}>New document</button>
+     
       {/* <DocumentEditor/>
       <DocumentUpload /> */}
     </div>
