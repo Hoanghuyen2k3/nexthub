@@ -9,24 +9,54 @@ import 'firebase/analytics';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
+import { userLogin, userLogout } from '../../features/loginSlice';
+import { useDispatch } from 'react-redux';
 
+
+
+import { collection, query, orderBy, limit, addDoc} from 'firebase/firestore';
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+
+  const [user] = useAuthState(auth);
+
+
+
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .catch(error => {
         console.error(error);
+        dispatch(userLogout());
       });
+
+    if (user) {
+      const { uid, photoURL } = auth.currentUser;
+      dispatch(userLogin({uid: uid, photoURL: photoURL}));
+
+      console.log('User UID:', uid);
+    } else {
+      dispatch(userLogout());
+    }
   }
   const handleSignIn = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password); // Use 'auth' object
       console.log("success");
+      if (user) {
+        const { uid, photoURL } = auth.currentUser;
+        dispatch(userLogin({uid: uid, photoURL: photoURL}));
+  
+        console.log('User UID:', uid);
+      } else {
+        dispatch(userLogout());
+      }
     } catch (error) {
         console.log("error")
+        dispatch(userLogout())
       // Handle login error
     }
   };
@@ -35,9 +65,18 @@ const Auth = () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password); // Use 'auth' object
       console.log("success");
+      if (user) {
+        const { uid, photoURL } = auth.currentUser;
+        dispatch(userLogin({uid: uid, photoURL: photoURL}));
+  
+        console.log('User UID:', uid);
+      } else {
+        dispatch(userLogout());
+      }
       // Handle successful registration
     } catch (error) {
         console.log("error")
+        dispatch(userLogout())
       // Handle registration error
     }
   };
